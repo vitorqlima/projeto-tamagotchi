@@ -1,7 +1,8 @@
+import { useRouter } from "expo-router";
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const data = [
-    {title: 'Cadastrar Bichinho'},
+    {title: 'Cadastrar'},
 ]
 
 type ItemProps = {
@@ -9,11 +10,12 @@ type ItemProps = {
 }
 
 const Item = ({title}: ItemProps) => {
+    const router = useRouter()
     return(
         <TouchableOpacity 
         style={styles.item}
         onPress={() => {
-            alert("Cadastro iniciado")
+            router.push('screens/cadastro')
         }}>
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
@@ -59,7 +61,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     item: {
-        backgroundColor: '#cf51968d',
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
