@@ -1,50 +1,77 @@
 import { useRouter } from "expo-router";
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Button, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { petService } from "./database/petsService";
+import { useEffect, useState } from "react";
 
-const data = [
-    {title: 'Cadastrar'},
-]
-
-type ItemProps = {
-    title: string
+interface Pet {
+    id: number;
+    nome: string;
+    fome: number;
+    sono: number;
+    diversao: number;
+    imageUri: string;
 }
 
-const Item = ({title}: ItemProps) => {
-    const router = useRouter()
-    return(
-        <TouchableOpacity 
-        style={styles.item}
-        onPress={() => {
-            router.push('screens/cadastro')
-        }}>
-            <Text style={styles.title}>{title}</Text>
-        </TouchableOpacity>
-    );
-}
 
 const index = () => {
+    const petServ = petService();
+    const router = useRouter();
+    const [listaPets, setListaPets] = useState<Pet[]>([])
+
+    useEffect(() => {
+        const listPets = async () => {
+            const res = await (await petServ).getPets()
+            setListaPets(res as Pet[])
+        }
+
+        listPets()
+    },[])
+    
+    type ItemProps = {
+        id: number,
+        nome: string
+    }
+    
+    const Item = ({id, nome}: ItemProps) => {
+        return(
+            <TouchableOpacity 
+            style={styles.item}
+            onPress={async () => {
+                router.push({
+                    pathname: "/screens/petScreen",
+                    params: {
+                        id: id
+                    }
+            })
+            }}>
+            <Text style={styles.title}>{nome}</Text>
+            </TouchableOpacity>
+        );
+    }
+    
     return (
         <SafeAreaView style={styles.container}>
             <Image source={require('../assets/images/icon.png')} style={{ width: 80, height: 80, alignSelf: "center" }} />
             <View style={styles.containerContent}>
                 <FlatList
-                data={data}
-                renderItem={({item}) => <Item title={item.title}/>}
+                data={listaPets}
+                renderItem={({item}) => <Item nome={item.nome} id={item.id}/>}
                 horizontal={true}
                 contentContainerStyle={styles.flatListContainer}
                 />
             </View>
+            <Button title="CADASTRAR BICHINHO" onPress={() => router.push("/screens/cadastro")}/>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#cf5197',
+        backgroundColor: '#00ffff',
         flex: 1
     },
     containerContent: {
-        backgroundColor: '#ffdaee',
+        backgroundColor: '#caffff',
         flex: 1,
         justifyContent: 'center',
         alignItems: "center",
