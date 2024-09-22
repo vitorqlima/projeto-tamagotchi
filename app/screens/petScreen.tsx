@@ -41,8 +41,8 @@ const petScreen = () => {
                         <TouchableOpacity onPress={() => {setGameModal(false); router.push("./memory")}}>
                             <Text style={styles.modalOption}>🧠 Jogo da Memória</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Alert.alert("Aguarde..." , "Jogo em desenvolvimento")}>
-                            <Text style={styles.modalOption}>Jogo 2</Text>
+                        <TouchableOpacity onPress={() => {setGameModal(false); router.push("./maze")}}>
+                            <Text style={styles.modalOption}>🕹️ Jogo do Labirinto</Text>
                         </TouchableOpacity>
                         <Button title="Fechar" onPress={() => setGameModal(false)} />
                     </View>
@@ -81,7 +81,7 @@ const petScreen = () => {
                         <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
                             <Text style={styles.modalOption}>🍹 +5</Text>
                         </TouchableOpacity>
-                        <Button title="Fechar" onPress={() => setFoodModal(false)} />
+                        <Button title="Fechar" onPress={() => setFoodModal(false)} /> 
                     </View>
                 </View>
             </Modal>            
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     },
     topSection: {
         flex: 1,
-        justifyContent: 'flex-start', // Fixa o nome do bichinho no topo
+        justifyContent: 'flex-start', 
         alignItems: 'center',
         paddingTop: 20,
     },
@@ -126,8 +126,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '100%',
-        position: 'absolute', // Fixa os botões na parte inferior
-        bottom: 30,           // Ajuste a distância da borda inferior
+        position: 'absolute', 
+        bottom: 30,           
         paddingHorizontal: 20,
     },
     image: {

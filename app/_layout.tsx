@@ -31,8 +31,9 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme}>
       <SQLiteProvider databaseName='pets.db' onInit={initializeDatabase}>
       <Stack screenOptions={{headerShown: false}}>
-        <Stack.Screen name="index" 
-        options={{
+        <Stack.Screen 
+          name="index" 
+          options={{
           title: "Tamagochi"
           }}/>
           <Stack.Screen 
