@@ -10,31 +10,42 @@ interface Pet {
     sono: number;
     diversao: number;
     imageUri: string;
+    status: string
 }
-
 
 const index = () => {
     const petServ = petService();
     const router = useRouter();
     const [listaPets, setListaPets] = useState<Pet[]>([])
 
+    const imageMapping: { [key: string]: any } = {
+        '3': require('../assets/images/pet1.png'),
+        '4': require('../assets/images/pet2.png'),
+        '5': require('../assets/images/pet3.png'),
+        '6': require('../assets/images/pet4.png'),
+        '7': require('../assets/images/pet5.png'),
+        '8': require('../assets/images/pet6.png'),
+    };
+    
+    const listPets = async () => {
+        const res = await (await petServ).getPets()
+        setListaPets(res as Pet[])
+        console.log(res)
+
+    }
+    
     useEffect(() => {
-        const listPets = async () => {
-            const res = await (await petServ).getPets()
-            setListaPets(res as Pet[])
-        }
         listPets()
     },[])
     
     type ItemProps = {
         id: number,
-        nome: string
+        nome: string,
+        imagem: string,
+        status: string
     }
-
-
-
     
-    const Item = ({id, nome}: ItemProps) => {
+    const Item = ({id, nome, imagem, status}: ItemProps) => {
         return(
             <TouchableOpacity 
             style={styles.item}
@@ -46,7 +57,9 @@ const index = () => {
                     }
             })
             }}>
+            <Image source={imagem ? imageMapping[imagem] : null} style={{width: 230, height: 420}}/>
             <Text style={styles.title}>{nome}</Text>
+            <Text style={styles.textoStatus}>{status}</Text>
             </TouchableOpacity>
         );
     }
@@ -55,9 +68,10 @@ const index = () => {
         <SafeAreaView style={styles.container}>
             <Image source={require('../assets/images/icon.png')} style={{ width: 80, height: 80, alignSelf: "center" }} />
             <View style={styles.containerContent}>
+            <Text style={styles.titleText}>Selecione seu Bichinho ❤️</Text>
                 <FlatList
                 data={listaPets}
-                renderItem={({item}) => <Item nome={item.nome} id={item.id}/>}
+                renderItem={({item}) => <Item nome={item.nome} id={item.id} imagem={item.imageUri} status={item.status}/>}
                 horizontal={true}
                 contentContainerStyle={styles.flatListContainer}
                 />
@@ -79,11 +93,23 @@ const styles = StyleSheet.create({
         alignItems: "center",
 
     },
+    titleText: {
+        color: '#000000',
+        fontSize: 25,
+        fontWeight: "500",
+        marginTop: 50,
+
+    },
     texto: {
         color: '#000000',
         fontSize: 25,
         fontWeight: "300",
         padding: 20,
+    },
+    textoStatus: {
+        color: '#000000',
+        fontSize: 25,
+        fontWeight: "200",
     },
     flatListContainer: {
         justifyContent: 'center',

@@ -22,8 +22,8 @@ const petScreen = () => {
     };
     
     const getStatus = async () => {
-        const res = (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao)
-        setStatus(res)
+        const res = (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao);
+        setStatus(res);
     }
     
     const buscarPet = async () => {
@@ -32,9 +32,19 @@ const petScreen = () => {
         getStatus()
     }
 
+    const mudarStatus = async () => {
+        const res =  (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao);
+        console.log(res!);
+        (await petServ).setStatus(res!, id)
+    }
+
     useEffect(() => {
-        buscarPet()
+        buscarPet();
     }, [pet])
+
+    useEffect(() => {
+        mudarStatus()
+    }, [status])
    
     return (
         <SafeAreaView style={styles.container}>
@@ -96,19 +106,19 @@ const petScreen = () => {
 
             <View style={styles.topSection}>
                 <Text style={styles.title}>{pet ? pet.nome : "Carregando..."}</Text>
+                <Text style={styles.StatusText}>Status: {status}</Text>
                 <Image 
                 source={pet ? imageMapping[pet.imageUri] : null} 
                 style={styles.image}/>
-                <Text>Energia: {pet.sono}</Text>
-                <Text>Alimentação: {pet.fome}</Text>
-                <Text>Diversão: {pet.diversao}</Text>
-                <Text>Status: {status}</Text>
+                <Text style={styles.atributosText}>Energia 💪🏻: {pet.sono}</Text>
+                <Text style={styles.atributosText}>Alimentação 🍔: {pet.fome}</Text>
+                <Text style={styles.atributosText}>Diversão 😁: {pet.diversao}</Text>
             </View>
 
             <View style={styles.buttonContainer}>
                 <Button title="🍇 Alimenta-lo" onPress={() => setFoodModal(true)} />
                 <Button title="🎮 Brincar" onPress={() => setGameModal(true)} />
-                <Button title="💤 Dormir" onPress={async () => {(await petServ).setStatus("Dormindo 💤💤💤" , pet.id) ; (await petServ).setHoraSono(pet.id) ; router.back() , Alert.alert("Dormindo 💤💤💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.")}} />
+                <Button title="💤 Dormir" onPress={async () => {(await petServ).setStatus("Dormindo 💤💤💤" , pet.id) ; (await petServ).setHoraSono(pet.id) ; router.back() , Alert.alert("Dormindo 💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.")}} />
             </View>
         </SafeAreaView>
     );
@@ -116,7 +126,7 @@ const petScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#caffff',
+        backgroundColor: '#ffffe6',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -126,13 +136,23 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start', 
         alignItems: 'center',
-        paddingTop: 20,
+        paddingTop: 10,
     },
     title: {
         color: '#000000',
         fontSize: 30,
         fontWeight: "bold",
-        paddingBottom: 20,
+        paddingBottom: 10,
+        textAlign: 'center',
+    },
+    StatusText: {
+        color: '#000000',
+        fontSize: 30,
+        textAlign: 'center',
+    },
+    atributosText: {
+        color: '#000000',
+        fontSize: 30,
         textAlign: 'center',
     },
     buttonContainer: {
@@ -142,10 +162,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     image: {
-        width: 100,
-        height: 160,
+        width: 250,
+        height: 380,
         margin: 10,
         borderRadius: 10,
+        marginTop: 50
     },
     modalContainer: {
         flex: 1,

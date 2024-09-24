@@ -43,7 +43,8 @@ const Cadastro = () => {
             fome: 100, 
             sono: 100, 
             diversao: 100, 
-            imageUri: selectedImage!
+            imageUri: selectedImage!,
+            status: "Muito Bem 😀"
             });
             Alert.alert("Cadastrado!", "Bichinho cadastrado com sucesso.")
             router.back()
@@ -80,7 +81,7 @@ const Cadastro = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#caffff',
+        backgroundColor: '#ffcae0',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',

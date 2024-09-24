@@ -3,12 +3,12 @@ import { useSQLiteContext } from "expo-sqlite"
 export const petService = async () => {
     const database = useSQLiteContext()
     
-    const cadastrarPet = async ({nome, fome, sono, diversao, imageUri} : {nome: string, fome: number, sono: number, diversao: number, imageUri: string}) => {
+    const cadastrarPet = async ({nome, fome, sono, diversao, imageUri, status} : {nome: string, fome: number, sono: number, diversao: number, imageUri: string, status: string}) => {
         const query = await database.prepareAsync(`
-            INSERT INTO Pets (nome, fome, sono, diversao, imageUri) VALUES (
-            $nome, $fome, $sono, $diversao, $imageUri)`)
+            INSERT INTO Pets (nome, fome, sono, diversao, imageUri, status) VALUES (
+            $nome, $fome, $sono, $diversao, $imageUri, $status)`)
         try {
-            await query.executeAsync({$nome: nome, $fome: fome, $sono: sono, $diversao: diversao, $imageUri: imageUri})
+            await query.executeAsync({$nome: nome, $fome: fome, $sono: sono, $diversao: diversao, $imageUri: imageUri, $status: status})
             console.log("Pet cadastrado!")
         } catch (error) {
             console.log("Ocorreu um erro.")
@@ -147,6 +147,8 @@ export const petService = async () => {
             return "Bem 🙂";
         } else if (somaAtributos >= 251) {
             return "Muito bem 😀";
+        }else {
+            null
         }
     };
 
