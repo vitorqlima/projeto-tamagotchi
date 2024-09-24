@@ -6,27 +6,35 @@ import { useEffect, useState } from "react";
 const petScreen = () => {
     const params = useLocalSearchParams();
     const petServ = petService()
-    const [pet, setPet] = useState<any>()
+    const [pet, setPet] = useState<any>([])
     const [gameModal, setGameModal] = useState(false)
     const [foodModal, setFoodModal] = useState(false)
-    const id = params.id;
+    const [status, setStatus] = useState<string>()
+    const id = Number(params.id)
 
     const imageMapping: { [key: string]: any } = {
-        '1': require('../../assets/images/pet1.png'),
-        '2': require('../../assets/images/pet2.png'),
-        '3': require('../../assets/images/pet3.png'),
-        '4': require('../../assets/images/pet4.png'),
-        '5': require('../../assets/images/pet5.png'),
-        '6': require('../../assets/images/pet6.png'),
+        '3': require('../../assets/images/pet1.png'),
+        '4': require('../../assets/images/pet2.png'),
+        '5': require('../../assets/images/pet3.png'),
+        '6': require('../../assets/images/pet4.png'),
+        '7': require('../../assets/images/pet5.png'),
+        '8': require('../../assets/images/pet6.png'),
     };
+    
+    const getStatus = async () => {
+        const res = (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao)
+        setStatus(res)
+    }
+    
+    const buscarPet = async () => {
+        const res = await (await petServ).getPetsById(Number(id))
+        await setPet(res)
+        getStatus()
+    }
 
     useEffect(() => {
-        const buscarPet = async () => {
-            const res = await (await petServ).getPetsById(Number(id))
-            setPet(res)
-        }
         buscarPet()
-    }, [])
+    }, [pet])
    
     return (
         <SafeAreaView style={styles.container}>
@@ -57,28 +65,28 @@ const petScreen = () => {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Escolha uma comida:</Text>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id); (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍇 +5</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍑 +5</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 20, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🌭 +20</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 15, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🥩 +15</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 25, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍛 +25</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 10, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍪 +10</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 10, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍰 +10</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setFoodModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
                             <Text style={styles.modalOption}>🍹 +5</Text>
                         </TouchableOpacity>
                         <Button title="Fechar" onPress={() => setFoodModal(false)} /> 
@@ -91,13 +99,16 @@ const petScreen = () => {
                 <Image 
                 source={pet ? imageMapping[pet.imageUri] : null} 
                 style={styles.image}/>
+                <Text>Energia: {pet.sono}</Text>
+                <Text>Alimentação: {pet.fome}</Text>
+                <Text>Diversão: {pet.diversao}</Text>
+                <Text>Status: {status}</Text>
             </View>
-
 
             <View style={styles.buttonContainer}>
                 <Button title="🍇 Alimenta-lo" onPress={() => setFoodModal(true)} />
                 <Button title="🎮 Brincar" onPress={() => setGameModal(true)} />
-                <Button title="💤 Dormir" onPress={() => console.log(pet?.nome)} />
+                <Button title="💤 Dormir" onPress={async () => {(await petServ).setStatus("Dormindo 💤💤💤" , pet.id) ; (await petServ).setHoraSono(pet.id) ; router.back() , Alert.alert("Dormindo 💤💤💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.")}} />
             </View>
         </SafeAreaView>
     );

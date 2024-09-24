@@ -16,6 +16,11 @@ const cardsArray: Card[] = [
   { id: 7, value: '🍐' },
   { id: 8, value: '🍊' },
   { id: 9, value: '🍑' },
+  { id: 10, value: '🥥' },
+  { id: 11, value: '🥑' },
+  { id: 12, value: '🥝' },
+  { id: 13, value: '🍋‍🟩' },
+  { id: 14, value: '🍋' }
 ];
 
 const shuffleArray = (array: Card[]): Card[] => {
@@ -64,9 +69,6 @@ const MemoryGame: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <Text>Olá</Text>
-      </View>
       <View style={styles.grid}>
         {cards.map((card, index) => (
           <TouchableOpacity

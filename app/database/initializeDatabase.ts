@@ -8,7 +8,11 @@ const initializeDatabase = async (database: SQLiteDatabase) => {
         fome INTEGER,
         sono INTEGER,
         diversao INTEGER,
-        imageUri TEXT
+        imageUri TEXT,
+        horaSono INTERGER,
+        horaFome INTERGER,
+        horaDiversao INTERGER,
+        status TEXT
     );
     `)
 }

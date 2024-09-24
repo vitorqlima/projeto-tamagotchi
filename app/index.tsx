@@ -23,7 +23,6 @@ const index = () => {
             const res = await (await petServ).getPets()
             setListaPets(res as Pet[])
         }
-
         listPets()
     },[])
     
@@ -31,6 +30,9 @@ const index = () => {
         id: number,
         nome: string
     }
+
+
+
     
     const Item = ({id, nome}: ItemProps) => {
         return(
