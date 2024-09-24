@@ -116,8 +116,16 @@ const petScreen = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <Button title="🍇 Alimenta-lo" onPress={() => setFoodModal(true)} />
-                <Button title="🎮 Brincar" onPress={() => setGameModal(true)} />
+                <Button title="🍇 Alimenta-lo" onPress={() => { 
+                    if (pet.fome < 100) { 
+                        setFoodModal(true) 
+                    }else{
+                        Alert.alert("Atenção!", "Você já alimentou seu pet o suficiente.") }}} />
+                <Button title="🎮 Brincar" onPress={() => { 
+                    if (pet.sono < 20) { 
+                        Alert.alert("Atenção!", "Seu pet está com sono, ele precisa dormir.")
+                    }else{
+                        setGameModal(true)  }}} />
                 <Button title="💤 Dormir" onPress={async () => {(await petServ).setStatus("Dormindo 💤💤💤" , pet.id) ; (await petServ).setHoraSono(pet.id) ; router.back() , Alert.alert("Dormindo 💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.")}} />
             </View>
         </SafeAreaView>

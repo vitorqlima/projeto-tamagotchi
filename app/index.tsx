@@ -11,6 +11,8 @@ interface Pet {
     diversao: number;
     imageUri: string;
     status: string
+    horaSono: string
+    horaFome: string
 }
 
 const index = () => {
@@ -27,24 +29,94 @@ const index = () => {
         '8': require('../assets/images/pet6.png'),
     };
     
-    const listPets = async () => {
-        const res = await (await petServ).getPets()
-        setListaPets(res as Pet[])
-        console.log(res)
-
-    }
-    
-    useEffect(() => {
-        listPets()
-    },[])
-    
     type ItemProps = {
         id: number,
         nome: string,
         imagem: string,
         status: string
     }
-    
+
+    //LOGICA PARA DIMINUIR OS ATRIBUTOS
+
+    const horaAtual = new Date()
+
+    const verificarSono = async () => {
+        for (let i = 0; i < listaPets.length; i++) {
+            const res = listaPets[i];
+            if (res.status === "Dormindo 💤💤💤") {
+                const horaSono = new Date(res.horaSono as string);
+                const novoSono = (res.sono + (5 * Math.floor( Math.abs(horaSono.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))));
+                if (novoSono > 100 ) {
+                    console.log(novoSono);
+                    (await petServ).setSono(100, res.id)
+                    console.log("Novo Sono: " + 100)
+                }else {
+                    (await petServ).setSono(novoSono, res.id)
+                    console.log("Novo Sono: " + novoSono)
+                }
+            }else {
+                const horaSono = new Date(res.horaSono as string)
+                const novoSono = (res.sono - (5 * Math.floor( Math.abs(horaSono.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))));
+                if (novoSono < 0 ) {
+                    (await petServ).setSono(100, res.id)
+                    console.log("Novo Sono: " + 0)
+                }else {
+                    (await petServ).setSono(novoSono, res.id)
+                    console.log("Novo Sono: " + novoSono)
+                }
+            }
+        }
+    }
+
+    const aumentarSono = async () => {
+        (await petServ).setSono(100, 1)
+    }
+
+    const verificarFome = async () => {
+        for (let i = 0; i < listaPets.length; i++) {
+            const res = listaPets[i];
+            const horaFome = new Date(res.horaFome as string)
+            const novaFome = (res.fome - (5 * Math.floor( Math.abs(horaFome.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))));
+            if (novaFome > 100 || res.fome > 100) {
+                (await petServ).setFome(100, res.id)
+                console.log("Novo fome: 100")
+            }else if (novaFome < 0 || res.fome < 0) {
+                (await petServ).setFome(0, res.id)
+                console.log("Novo fome: 100")
+            }else{
+                (await petServ).setFome(novaFome, res.id)
+                console.log("Novo fome: " + novaFome)
+            }
+        }
+    }
+
+    const verificarDiversao = () => {
+        const res = listaPets[0];
+        const horaSono = new Date(res.horaSono as string)
+        const novoSono = 5 * Math.floor( Math.abs(horaSono.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))
+
+        console.log("Novo Sono: " + novoSono)
+
+
+    }
+       
+    const listPets = async () => {
+        const res = await (await petServ).getPets()
+        setListaPets(res as Pet[])
+    }
+
+    useEffect(() => {
+        const fetchPets = async () => {
+            if (listaPets.length === 0) {
+                await listPets()
+            }else{
+                verificarSono()
+                verificarFome()
+            }
+        }
+        fetchPets()
+    }, [listaPets])
+        
     const Item = ({id, nome, imagem, status}: ItemProps) => {
         return(
             <TouchableOpacity 
