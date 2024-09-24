@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Dimensions, Alert, StatusBar } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { petService } from '../database/petsService';
 
 const { width, height } = Dimensions.get('window');
 
 export default function MazeGame() {
   const [position, setPosition] = useState({ x: 30, y: 30 });
   const [gyroData, setGyroData] = useState({ x: 0, y: 0, z: 0 });
-
+  const [pet, setPet] = useState<any>([])
+  const petServ = petService();
+  const params = useLocalSearchParams()
+  
+  const buscarPet = async () => {
+    const res = await (await petServ).getPetsById(Number(params.id))
+    await setPet(res)
+  }
+  
+  const aumentarDiversão = async () => {
+    const novaDiversao = pet.diversao;
+    (await petServ).setDiversao(novaDiversao, Number(params.id))
+  }
+  
   const walls = [
     { left: 40, top: 10, width: 20, height: 100 },   
     { left: 340, top: 10, width: 20, height: 160 },  
@@ -42,9 +56,13 @@ export default function MazeGame() {
     { left: 90, top: 820, width: 150, height: 20 },  
     { left: 240, top: 760, width: 150, height: 20 }, 
   ];
-
+  
   const goal = { left: width - 60, top: height - 40, width: 30, height: 30 };
-
+  
+  useEffect(() => {
+    buscarPet()
+  }, [])
+  
   useEffect(() => {
     const subscription = Gyroscope.addListener((result) => {
       setGyroData(result);
@@ -75,6 +93,7 @@ export default function MazeGame() {
       position.y < goal.top + goal.height
     ) {
       Alert.alert('Parabéns!', 'Você venceu o jogo!');
+      aumentarDiversão()
       router.back()
     }
   };

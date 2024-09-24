@@ -20,12 +20,12 @@ const petScreen = () => {
         '7': require('../../assets/images/pet5.png'),
         '8': require('../../assets/images/pet6.png'),
     };
-    
+
     const getStatus = async () => {
         const res = (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao);
         setStatus(res);
     }
-    
+
     const buscarPet = async () => {
         const res = await (await petServ).getPetsById(Number(id))
         await setPet(res)
@@ -33,7 +33,7 @@ const petScreen = () => {
     }
 
     const mudarStatus = async () => {
-        const res =  (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao);
+        const res = (await petServ).calcularStatus(pet.fome, pet.sono, pet.diversao);
         console.log(res!);
         (await petServ).setStatus(res!, id)
     }
@@ -45,21 +45,31 @@ const petScreen = () => {
     useEffect(() => {
         mudarStatus()
     }, [status])
-   
+
     return (
         <SafeAreaView style={styles.container}>
             <Modal
-            animationType="fade"
-            transparent={true}
-            visible={gameModal}
+                animationType="fade"
+                transparent={true}
+                visible={gameModal}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Escolha um jogo</Text>
-                        <TouchableOpacity onPress={() => {setGameModal(false); router.push("./memory")}}>
+                        <TouchableOpacity onPress={() => { setGameModal(false); router.push(
+                            { pathname: "./memory",
+                                params: {
+                                    id: id
+                                }
+                            }) }}>
                             <Text style={styles.modalOption}>🧠 Jogo da Memória</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {setGameModal(false); router.push("./maze")}}>
+                        <TouchableOpacity onPress={() => { setGameModal(false); router.push(                            
+                            { pathname: "./maze",
+                                params: {
+                                    id: id
+                                }
+                            }) }}>
                             <Text style={styles.modalOption}>🕹️ Jogo do Labirinto</Text>
                         </TouchableOpacity>
                         <Button title="Fechar" onPress={() => setGameModal(false)} />
@@ -68,65 +78,69 @@ const petScreen = () => {
             </Modal>
 
             <Modal
-            animationType="fade"
-            transparent={true}
-            visible={foodModal}
+                animationType="fade"
+                transparent={true}
+                visible={foodModal}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Escolha uma comida:</Text>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id); (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 5, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍇 +5</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 5, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍑 +5</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 20, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 20, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🌭 +20</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 15, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 15, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🥩 +15</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 25, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 25, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍛 +25</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 10, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 10, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍪 +10</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 10, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 10, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍰 +10</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {(await petServ).setFome(pet.fome + 5, id) ; (await petServ).setHoraFome(pet.id) ; buscarPet()}}>
+                        <TouchableOpacity onPress={async () => { (await petServ).setFome(pet.fome + 5, id); (await petServ).setHoraFome(pet.id); buscarPet() }}>
                             <Text style={styles.modalOption}>🍹 +5</Text>
                         </TouchableOpacity>
-                        <Button title="Fechar" onPress={() => setFoodModal(false)} /> 
+                        <Button title="Fechar" onPress={() => setFoodModal(false)} />
                     </View>
                 </View>
-            </Modal>            
+            </Modal>
 
             <View style={styles.topSection}>
                 <Text style={styles.title}>{pet ? pet.nome : "Carregando..."}</Text>
                 <Text style={styles.StatusText}>Status: {status}</Text>
-                <Image 
-                source={pet ? imageMapping[pet.imageUri] : null} 
-                style={styles.image}/>
+                <Image
+                    source={pet ? imageMapping[pet.imageUri] : null}
+                    style={styles.image} />
                 <Text style={styles.atributosText}>Energia 💪🏻: {pet.sono}</Text>
                 <Text style={styles.atributosText}>Alimentação 🍔: {pet.fome}</Text>
                 <Text style={styles.atributosText}>Diversão 😁: {pet.diversao}</Text>
             </View>
 
             <View style={styles.buttonContainer}>
-                <Button title="🍇 Alimenta-lo" onPress={() => { 
-                    if (pet.fome < 100) { 
-                        setFoodModal(true) 
-                    }else{
-                        Alert.alert("Atenção!", "Você já alimentou seu pet o suficiente.") }}} />
-                <Button title="🎮 Brincar" onPress={() => { 
-                    if (pet.sono < 20) { 
+                <Button title="🍇 Alimenta-lo" onPress={() => {
+                    if (pet.fome < 100) {
+                        setFoodModal(true)
+                    } else {
+                        Alert.alert("Atenção!", "Você já alimentou seu pet o suficiente.")
+                    }
+                }} />
+                <Button title="🎮 Brincar" onPress={async () => {
+                    if (pet.sono < 20) {
                         Alert.alert("Atenção!", "Seu pet está com sono, ele precisa dormir.")
-                    }else{
-                        setGameModal(true)  }}} />
-                <Button title="💤 Dormir" onPress={async () => {(await petServ).setStatus("Dormindo 💤💤💤" , pet.id) ; (await petServ).setHoraSono(pet.id) ; router.back() , Alert.alert("Dormindo 💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.")}} />
+                    } else {
+                        setGameModal(true)
+                    }
+                }} />
+                <Button title="💤 Dormir" onPress={async () => { (await petServ).setStatus("Dormindo 💤💤💤", pet.id); (await petServ).setHoraSono(pet.id); router.back(), Alert.alert("Dormindo 💤", "Seu Pet está dormindo agora, acesse novamente para acorda-lo.") }} />
             </View>
         </SafeAreaView>
     );
@@ -142,7 +156,7 @@ const styles = StyleSheet.create({
     },
     topSection: {
         flex: 1,
-        justifyContent: 'flex-start', 
+        justifyContent: 'flex-start',
         alignItems: 'center',
         paddingTop: 10,
     },
@@ -165,8 +179,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '100%',
-        position: 'absolute', 
-        bottom: 30,           
+        position: 'absolute',
+        bottom: 30,
         paddingHorizontal: 20,
     },
     image: {

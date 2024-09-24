@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Button } from 'react-native';
+import { petService } from '../database/petsService';
+import { useLocalSearchParams } from 'expo-router';
 
 interface Card {
   id: number;
@@ -37,13 +39,31 @@ const MemoryGame: React.FC = () => {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [matchedCards, setMatchedCards] = useState<number[]>([]);
   const [gameOver, setGameOver] = useState(false);
-
+  const [pet, setPet] = useState<any>([])
+  const petServ = petService();
+  const params = useLocalSearchParams()
+  
+  const buscarPet = async () => {
+    const res = await (await petServ).getPetsById(Number(params.id))
+    await setPet(res)
+  }
+  
+  const aumentarDiversão = async () => {
+    const novaDiversao = pet.diversao;
+    (await petServ).setDiversao(novaDiversao, Number(params.id))
+  }
+  
+  useEffect(() => {
+    buscarPet()
+  }, [])
+  
   const handleCardPress = (index: number) => {
     if (selectedCards.length < 2 && !selectedCards.includes(index)) {
       setSelectedCards([...selectedCards, index]);
     }
   };
-
+  
+  
   useEffect(() => {
     if (selectedCards.length === 2) {
       const [first, second] = selectedCards;
@@ -57,6 +77,7 @@ const MemoryGame: React.FC = () => {
   useEffect(() => {
     if (matchedCards.length === cards.length) {
       setGameOver(true);
+      aumentarDiversão()
     }
   }, [matchedCards]);
 

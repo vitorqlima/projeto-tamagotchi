@@ -1,7 +1,7 @@
-import { useRouter } from "expo-router";
-import { Button, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { Alert, Button, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { petService } from "./database/petsService";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Pet {
     id: number;
@@ -13,12 +13,14 @@ interface Pet {
     status: string
     horaSono: string
     horaFome: string
+    horaDiversao: string
 }
 
 const index = () => {
     const petServ = petService();
     const router = useRouter();
     const [listaPets, setListaPets] = useState<Pet[]>([])
+    const [status, setStatus] = useState()
 
     const imageMapping: { [key: string]: any } = {
         '3': require('../assets/images/pet1.png'),
@@ -68,10 +70,6 @@ const index = () => {
         }
     }
 
-    const aumentarSono = async () => {
-        (await petServ).setSono(100, 1)
-    }
-
     const verificarFome = async () => {
         for (let i = 0; i < listaPets.length; i++) {
             const res = listaPets[i];
@@ -90,14 +88,22 @@ const index = () => {
         }
     }
 
-    const verificarDiversao = () => {
-        const res = listaPets[0];
-        const horaSono = new Date(res.horaSono as string)
-        const novoSono = 5 * Math.floor( Math.abs(horaSono.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))
-
-        console.log("Novo Sono: " + novoSono)
-
-
+    const verificarDiversao = async () => {        
+        for (let i = 0; i < listaPets.length; i++) {
+            const res = listaPets[i];
+            const horaDiversao = new Date(res.horaDiversao as string)
+            const novaDiversao = 5 * Math.floor( Math.abs(horaDiversao.getTime() - horaAtual.getTime()) / (1000 * 60 * 60))
+            if (novaDiversao > 100 || res.diversao > 100) {
+                (await petServ).setDiversao(100, res.id)
+                console.log("Novo fome: 100")
+            }else if (novaDiversao < 0 || res.diversao < 0) {
+                (await petServ).setDiversao(0, res.id)
+                console.log("Novo fome: 100")
+            }else{
+                (await petServ).setDiversao(novaDiversao, res.id)
+                console.log("Novo fome: " + novaDiversao)
+            }
+        }
     }
        
     const listPets = async () => {
@@ -105,29 +111,36 @@ const index = () => {
         setListaPets(res as Pet[])
     }
 
-    useEffect(() => {
-        const fetchPets = async () => {
-            if (listaPets.length === 0) {
-                await listPets()
-            }else{
-                verificarSono()
-                verificarFome()
-            }
+    const fetchPets = async () => {
+        if (listaPets.length === 0) {
+            await listPets()
+        }else{
+            verificarSono()
+            verificarFome()
+            verificarDiversao()
         }
-        fetchPets()
-    }, [listaPets])
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchPets()
+        }, [])
+    )
         
     const Item = ({id, nome, imagem, status}: ItemProps) => {
         return(
             <TouchableOpacity 
             style={styles.item}
-            onPress={async () => {
+            onPress={async () => { if (status === "Morto 😵") {
+                Alert.alert("Oh não!", "Seu pet morreu. ")
+                }else {
                 router.push({
                     pathname: "/screens/petScreen",
                     params: {
                         id: id
                     }
-            })
+                })
+            }
             }}>
             <Image source={imagem ? imageMapping[imagem] : null} style={{width: 230, height: 420}}/>
             <Text style={styles.title}>{nome}</Text>
