@@ -19,7 +19,7 @@ export default function MazeGame() {
   }
   
   const aumentarDiversão = async () => {
-    const novaDiversao = pet.diversao;
+    const novaDiversao = pet.diversao + 5;
     (await petServ).setDiversao(novaDiversao, Number(params.id))
   }
   

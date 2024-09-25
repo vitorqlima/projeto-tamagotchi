@@ -1,7 +1,7 @@
 import { useFocusEffect, useRouter } from "expo-router";
 import { Alert, Button, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { petService } from "./database/petsService";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 interface Pet {
     id: number;
@@ -20,7 +20,6 @@ const index = () => {
     const petServ = petService();
     const router = useRouter();
     const [listaPets, setListaPets] = useState<Pet[]>([])
-    const [status, setStatus] = useState()
 
     const imageMapping: { [key: string]: any } = {
         '3': require('../assets/images/pet1.png'),
@@ -37,8 +36,6 @@ const index = () => {
         imagem: string,
         status: string
     }
-
-    //LOGICA PARA DIMINUIR OS ATRIBUTOS
 
     const horaAtual = new Date()
 

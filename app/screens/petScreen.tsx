@@ -127,11 +127,8 @@ const petScreen = () => {
 
             <View style={styles.buttonContainer}>
                 <Button title="🍇 Alimenta-lo" onPress={() => {
-                    if (pet.fome < 100) {
+
                         setFoodModal(true)
-                    } else {
-                        Alert.alert("Atenção!", "Você já alimentou seu pet o suficiente.")
-                    }
                 }} />
                 <Button title="🎮 Brincar" onPress={async () => {
                     if (pet.sono < 20) {
