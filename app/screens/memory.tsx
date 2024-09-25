@@ -49,7 +49,7 @@ const MemoryGame: React.FC = () => {
   }
   
   const aumentarDiversão = async () => {
-    const novaDiversao = pet.diversao + 5;
+    const novaDiversao = pet.diversao + 15;
     (await petServ).setDiversao(novaDiversao, Number(params.id))
   }
   
